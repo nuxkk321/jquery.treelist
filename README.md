@@ -1,5 +1,5 @@
 # treelist   
-demo : https://buxkk321.github.io/treelist/
+demo : https://nuxkk321.github.io/treelist/
 
 
 ## Usage  
