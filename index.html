@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .clearfix,.clear_fix {zoom: 1;}/*==for IE6/7 Maxthon2==*/
+        .clearfix:after,.clear_fix:after{content:".";display:block;width: 0;height:0;clear: both;visibility: hidden;}/*==for FF/chrome/opera/IE8==*/
+
+
+        .checkmod dl, .checkmod dd, .checkmod input {
+            margin: 0;
+        }
+        .checkmod dd ,.checkmod dt{
+            line-height: 30px;
+            padding-left: 10px;
+        }
+        .checkmod .fold{
+            float: left;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            width: 20px;
+        }
+
+        .checkmod .fold-icon {
+            display: inline-block;
+            vertical-align: middle;
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
+            background: url("bg_icon.png") no-repeat;
+            background-position: -125px -25px;
+        }
+        .checkmod .collapsed .fold-icon {
+            background-position: -100px -25px;
+        }
+    </style>
+</head>
+<body >
+
+
+<div class="checkmod">
+    <div class="collapsed clearfix" >
+        <span class="fold fold_all">
+            <i class="fold-icon"></i>
+        </span>
+    </div>
+
+
+    <dl id="data_box_main" >
+        <dt data-pid="0" data-id="80" class="hd">
+            <span class="fold"><i class="fold-icon"></i></span>
+            <label class="checkbox">
+                <input type="checkbox" value="80" />node_80
+            </label>
+        </dt>
+        <dd data-pid="80" data-id="63" class="bd " >
+            <span class="fold"><i class="fold-icon"></i></span>
+            <label class="checkbox">
+                <input type="checkbox" value="63"/>node_80_63
+            </label>
+        </dd>
+        <dd data-pid="80" data-id="128" class="bd " >
+            <span class="fold"><i class="fold-icon"></i></span>
+            <label class="checkbox">
+                <input type="checkbox" value="128"/>node_80_128
+            </label>
+        </dd>
+        <dt data-pid="0" data-id="1" class="hd">
+            <span class="fold"><i class="fold-icon"></i></span>
+            <label class="checkbox">
+                <input type="checkbox" value="80" />node_1
+            </label>
+        </dt>
+        <dd data-pid="1" data-id="3" class="bd " >
+            <span class="fold"><i class="fold-icon"></i></span>
+            <label class="checkbox">
+                <input type="checkbox" value="3"/>node_1_3
+            </label>
+        </dd>
+        <dd data-pid="1" data-id="6" class="bd " >
+            <span class="fold"><i class="fold-icon"></i></span>
+            <label class="checkbox">
+                <input type="checkbox" value="6"/>node_1_6
+            </label>
+        </dd>
+        <dd data-pid="1" data-id="39" class="bd " >
+            <span class="fold"><i class="fold-icon"></i></span>
+            <label class="checkbox">
+                <input type="checkbox" value="39"/>node_1_39
+            </label>
+        </dd>
+        <dd data-pid="39" data-id="90" class="bd " >
+            <span class="fold"><i class="fold-icon"></i></span>
+            <label class="checkbox">
+                <input type="checkbox" value="90"/>node_1_39_90
+            </label>
+        </dd>
+        <dd data-pid="39" data-id="91" class="bd " >
+            <span class="fold"><i class="fold-icon"></i></span>
+            <label class="checkbox">
+                <input type="checkbox" value="91"/>node_1_39_91
+            </label>
+        </dd>
+    </dl>
+</div>
+
+<script src="jquery-1.12.4.min.js"></script>
+<script src="jquery.treelist.js"></script>
+<script charset="utf-8" type="text/javascript">
+
+    $(function(){
+
+        var tl=$('#data_box_main').treelist({
+            expanderClass:'fold-icon',
+            indenterClass:'fold'
+        });
+        /*全部折叠*/
+        $('.fold_all').click(function(){
+            var p=$(this).parent();
+            var tb=$('#data_box_main');
+            if(p.hasClass('collapsed')){/*展开*/
+                tb.treelist('expandAll');
+                p.removeClass('collapsed');
+            }else{/*收起*/
+                tb.treelist('collapseAll');
+                p.addClass('collapsed');
+            }
+        });
+        /*勾选事件*/
+        tl.on('change','[type="checkbox"]',function(){
+            var node=$(this).closest('.treelist_list_node');
+            if(this.checked){
+                if(node.hasClass('level_head')){
+                    var ch_list=tl.treelist('getChild',node);
+                    ch_list.find('[type="checkbox"]').prop('checked',true);
+                }else{
+                    var p_list=tl.treelist('getParentAll',node);
+                    p_list.find('[type="checkbox"]').prop('checked',true)
+                }
+            }else{
+                var ch_list=tl.treelist('getChild',node);
+                ch_list.find('[type="checkbox"]').prop('checked',false);
+            }
+        });
+
+    });
+</script>
+
+</body>
+</html>
