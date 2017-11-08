@@ -57,7 +57,10 @@ var config = {
 
 
 ## API  
-example : $("#tree").treetable("function",param);
+example : 
+```js 
+$("#tree").treetable("function",param);
+```
 
 ### Functions
 
