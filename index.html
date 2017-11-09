@@ -28,11 +28,6 @@
             width: 17px;
             height: 17px;
             cursor: pointer;
-            background: url("bg_icon.png") no-repeat;
-            background-position: -125px -25px;
-        }
-        .checkmod .collapsed .fold-icon {
-            background-position: -100px -25px;
         }
     </style>
 </head>
@@ -110,6 +105,101 @@
 <script charset="utf-8" type="text/javascript">
 
     $(function(){
+
+        var fold_icon_collapsed;
+        var fold_icon_expanded;
+        (function(){
+            /*16进制字符串转rgb数组*/
+            function hex2rgb(hexstr){
+                hexstr=hexstr.toLowerCase();
+                if(hexstr[0]=='#') hexstr=hexstr.substr(1);
+
+                var rgbdata=[];
+                for(var i=0;i<3; i+=1){
+                    if(hexstr.length==3){
+                        rgbdata[i]=hexstr[i]+hexstr[i];
+                    }else{
+                        rgbdata[i]=hexstr[2*i]+hexstr[2*i+1];
+                    }
+                    rgbdata[i]=parseInt(rgbdata[i],16);
+                }
+                return rgbdata;
+            }
+            /*
+             简单的绘制图形方法
+             step_length:每一步的长度
+             path:绘路径的配置数组,每个路径的格式为[[起始点x,起始点y],方向,步数,颜色]
+             * */
+            function _cdraw(ctx,opt){
+                var options ={
+                    color:'#000',
+                    width:0,
+                    height:0,
+                    step_length:1,
+                    path:[]
+                };
+                if(opt) $.extend(options, opt);
+
+                var default_color=hex2rgb(options.color);
+                var step_length=options.step_length;
+                var path=options.path;
+                var direct_fix=[[0,0],
+                    [-1, 1],[0, 1],[1, 1],
+                    [-1, 0],[0, 0],[1, 0],
+                    [-1,-1],[0,-1],[1,-1]
+                ];
+
+                var imgData=ctx.getImageData(0,0,options.width,options.height);
+                for(var x in path){
+                    var p=path[x];
+                    var start=p[0];
+                    var direct=p[1];
+                    var step=p[2];
+                    var color=p[3] || default_color;
+                    var d_fix=direct_fix[direct];/*方向修正值*/
+                    /*计算需要画的像素个数*/
+                    var pix_count=step*step_length;
+                    for(var xi= 0;xi<pix_count;xi++){
+                        var draw_coord=[start[0]+xi*d_fix[0],start[1]+xi*d_fix[1]];
+                        var pix_num=
+                                draw_coord[1]*options.width+/*y轴的距离=第几行*/
+                                draw_coord[0];/*x轴的距离=第几列*/
+                        imgData.data[pix_num*4+0]=color[0];
+                        imgData.data[pix_num*4+1]=color[1];
+                        imgData.data[pix_num*4+2]=color[2];
+                        imgData.data[pix_num*4+3]=255;
+                    }
+                }
+                ctx.putImageData(imgData, 0, 0);
+            }
+            var ca=$('<canvas width="11" height="11"></canvas>');
+            var canvas=ca.get(0);
+            var ctx=canvas.getContext('2d');
+            _cdraw(ctx,{
+                color:'#7898B5',
+                width:11,
+                height:11,
+                path:[
+                    [[1,0],6,9],
+                    [[10,1],2,9],
+                    [[9,10],4,9],
+                    [[0,9],8,9],
+                    [[2,5],6,7,'#000']
+                ]
+            });
+            fold_icon_expanded = canvas.toDataURL("image/png");/*展开时的图标*/
+            _cdraw(ctx,{
+                width:11,
+                height:11,
+                path:[[[5,2],2,7]]
+            });
+            fold_icon_collapsed = canvas.toDataURL("image/png");/*加号*/
+        })();
+
+        $('head').append('<style>' +
+        '.checkmod .fold-icon {background: url("'+fold_icon_expanded+'") no-repeat;}' +
+        '.checkmod .collapsed .fold-icon {background: url("'+fold_icon_collapsed+'") no-repeat;}' +
+        '</style>');
 
         var tl=$('#data_box_main').treelist({
             expanderClass:'fold-icon',
