@@ -2,8 +2,11 @@
 demo : https://nuxkk321.github.io/jquery.treelist/
 
 
-## Usage  
-example :   
+## 使用概述
+该插件不生成节点左侧的展开收起图标,以及上下级节点间的各种连接线
+仅给节点添加表示层级的class,用padding-left 实现缩进的效果
+
+代码示例:
 ```html
   <dl id="data_box_main" >
     <dt data-pid="0" data-id="1">node_1</dt>
@@ -16,23 +19,20 @@ example :
   </script>
 ```
 
-## Configuration  
-
-
-### Settings  
+## 配置说明  
 
 ```js
 var config = {
-    nodeClass:false,
-    nodeIdAttr:"id", // maps to data-id
-    parentIdAttr:"pid", // maps to data-pid
-    rootId:'0',
+    nodeClass:false, //标示子节点的class,如果不填,则默认为容器元素的所有子元素
+    nodeIdAttr:"id", //存放节点id属性的 data-属性名
+    parentIdAttr:"pid", //存放节点pid属性的 data-属性名
+    rootId:'0',//根节点id,默认为0
 
     expanderClass:false,/*折叠按钮*/
     indenterClass:false,/*每行缩进所使用的元素*/
     collapsedClass:'collapsed',/*节点收起时的class*/
 
-    indent:19,
+    indent:19,//默认缩进量,单位px
     initCollapseAll:true,/*初始化的时候全部收起*/
     autoExpandChild:false,/*是否自动展开子节点的子节点*/
     autoHideExpander:true,/*是否自动隐藏没有子节点的节点折叠按钮*/
@@ -57,17 +57,16 @@ var config = {
 };
 ```
 
-### Events  
+## 事件  
 
 
 ## API  
-example : 
+代码示例 : 
 ```js 
-$("#tree").treetable("function",param);
+$("#tree").treetable("接口名",param);
 ```
 
-### Functions
-
+### 接口
 * expand: 
 * collapse: 
 * expandAll: 
